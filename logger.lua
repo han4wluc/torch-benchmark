@@ -52,10 +52,14 @@ function Logger:write()
 
 end
 
-function Logger:write_time(duration)
-  local filepath = self.logs_dir .. '/duration.txt'
+function Logger:write_result(duration, train_loss, validation_loss)
+  local filepath = self.logs_dir .. '/result.txt'
   local file = io.open(filepath, 'w')
-      file:write(duration .. 'seconds')
+      file:write(
+        'duration: ' .. duration .. 'seconds' .. '\n' ..
+        'train_loss: ' .. train_loss .. '\n' ..
+        'validation_loss: ' .. validation_loss
+      )
       file:close()
 end
 
