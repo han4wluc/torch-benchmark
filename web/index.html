@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="bower_components/dynatable/jquery.dynatable.css">
+    <style type="text/css">
+      th {
+        background-color: #444;
+      }
+      table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+
+      tr:hover{
+        background-color: #ccc;
+      }
+
+      .loss_img {
+        /*display: none;*/
+        position: absolute;
+        top: 100px;
+        left: 100px;
+        width: 800px;
+        height: 640px;
+      }
+
+    </style>
+  </head>
+  <body>
+
+ <!--  Hello
+    <select id="search-total_train_time" name="total_train_time">
+      <option></option>
+      <option>2</option>
+      <option>3</option>
+      <option>5</option>
+    </select>
+    <br> -->
+
+    <table id="my-ajax-table">
+      <thead>
+        <th>model_name</th>
+        <th>variant</th>
+        <th>epochs</th>
+        <th>learningRate</th>
+        <th>weightDecay</th>
+        <th>train_loss</th>
+        <th>validation_loss</th>
+        <th>train_accuracy</th>
+        <th>validation_accuracy</th>
+        <th>total_train_time</th>
+        <th>custom</th>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+
+
+    <img class="loss_img" src="./imgs/mlp_1_1.png">
+
+  </body>
+  <script src="bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="bower_components/dynatable/jquery.dynatable.js"></script>
+  <script>
+
+    $(document).ready(function(){
+      var _results;
+      $('.loss_img').css('display', 'none')
+
+      $.getJSON("results.json", function(results) {
+          _results = results
+          var dynatable = $('#my-ajax-table').dynatable({
+            features: {
+              paginate: false,
+              search: false,
+              recordCount: false,
+              perPageSelect: false
+            },
+            table: {
+              defaultColumnIdStyle: 'trimDash'
+            },
+            dataset: {
+              records: results,
+            }
+          }).data('dynatable');
+          // $('#search-total_train_time').change( function() {
+          //   var value = $(this).val();
+          //   if (value === "") {
+          //     dynatable.queries.remove("total_train_time");
+          //   } else {
+          //     dynatable.queries.add("total_train_time",value);
+          //   }
+          //   dynatable.process();
+          // });
+
+
+
+
+      });
+
+      setInterval(function(){
+          if($('.show_loss').length !== 0){
+            return;
+          }
+          console.log('updated')
+          $('table tr').each(function(i){
+            if(i == 0){ return; }
+            var index = i-1
+            var len = $(this).children().length;
+            var td = $(this).children()[len-1]
+
+            // console.log($($(this).children()[0]).text())
+            // console.log($($(this).children()[1]).text())
+
+            var modelName = _results[index].model_name
+            var variant = _results[index].variant
+            var modelName = $($(this).children()[0]).text()
+            var variant = $($(this).children()[1]).text()
+
+            var imgName = modelName + '_' + variant
+            $(td).html(`<div class="show_loss" img="${imgName}">img</div>`)
+          })
+
+          $('.show_loss').on('mouseenter', function(){
+            var imgName = $(this).attr('img')
+            var src = `./imgs/${imgName}.png`
+            $('.loss_img').attr('src', src)
+            $('.loss_img').css('display', '')
+          })
+
+          $('.show_loss').on('mouseleave', function(){
+            $('.loss_img').css('display', 'none')
+          })
+      },1000)
+
+    })
+  </script>
+</html>

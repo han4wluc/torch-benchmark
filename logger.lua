@@ -1,5 +1,7 @@
 
 local pretty = require 'pl.pretty'
+local json = require 'json'
+
 
 function round(x, decimals)
     assert(decimals > 0, 'decimals should be > 0')
@@ -52,15 +54,14 @@ function Logger:write()
 
 end
 
-function Logger:write_result(duration, train_loss, validation_loss)
-  local filepath = self.logs_dir .. '/result.txt'
-  local file = io.open(filepath, 'w')
-      file:write(
-        'duration: ' .. duration .. 'seconds' .. '\n' ..
-        'train_loss: ' .. train_loss .. '\n' ..
-        'validation_loss: ' .. validation_loss
-      )
-      file:close()
+function Logger:write_result(results)
+
+  local filepath = self.logs_dir .. '/result.json'
+  json.save(filepath, results)
+
+  -- local file = io.open(filepath, 'w')
+  -- file:write(json.encode(results))
+  -- file:close()
 end
 
 return Logger

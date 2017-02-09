@@ -54,4 +54,27 @@ function utils.feval(x_new)
   return loss, dl_params
 end
 
+function utils.get_batch(data, index, batch_size)
+  batch_start = ((index-1)*batch_size)+1
+  batch_end = index * batch_size
+  return data[{{batch_start,batch_end}}]
+end
+
+function utils.calc_accuracy(model, data, label)
+    local results = model:forward(data)
+    _, indices = torch.max(results, 2)
+    indices = indices:view(indices:nElement())
+    indices = indices:type('torch.IntTensor')
+    label = label:type('torch.IntTensor')
+    
+    r = torch.eq(indices, label)
+
+    correct = r:sum()
+    total = r:nElement()
+    
+    accuracy = correct / total
+    
+    return accuracy    
+end
+
 return utils
