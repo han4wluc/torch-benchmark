@@ -3,8 +3,6 @@ mnist = require 'mnist'
 
 utils = {}
 
-local tester = torch.Tester()
-
 function utils.load_data()
 
   fullset = mnist.traindataset()

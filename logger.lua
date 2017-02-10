@@ -23,14 +23,22 @@ do
   local Logger = torch.class('Logger')
 end
 
-function Logger:__init(logs_dir, info)
-  self.logs_dir = logs_dir
-  self.info = info
-  -- self.logs = 'epoch\tduration\ttrain_loss\tvalidation_loss\tlearning_rate'
+function write_to_file(path, mode, content)
+  local file = io.open(path, mode)
+  file:write(content)
+  file:close()
+end
 
-  -- if not file_exists then
+function Logger:__init(logs_dir, log_headers, info)
+
   os.execute('mkdir -p ' .. logs_dir)
-  -- end
+
+  self.logfile_path = logs_dir .. '/losses.log'
+  self.resultsFile_path = logs_dir .. '/results.json'
+  local infofile_path = logs_dir .. '/info.json'
+
+  json.save(infofile_path, info)
+  write_to_file(self.logfile_path, 'w', table.concat(log_headers, '\t'))
 
 end
 
@@ -42,26 +50,34 @@ end
 --     learning_rate
 -- end
 
-function Logger:write()
-  -- local logs_filepath = self.logs_dir .. '/losses.txt'
-  local info_filepath = self.logs_dir .. '/info.txt'
-  -- local file = io.open(logs_filepath, 'w')
-  --     file:write(self.logs)
-  --     file:close()
-  local file = io.open(info_filepath, 'w')
-      file:write(pretty.write(self.info))
-      file:close()
-
+function Logger:write_results(results)
+  json.save(self.resultsFile_path, results)
 end
 
-function Logger:write_result(results)
-
-  local filepath = self.logs_dir .. '/result.json'
-  json.save(filepath, results)
-
-  -- local file = io.open(filepath, 'w')
-  -- file:write(json.encode(results))
-  -- file:close()
+function Logger:append_log(columns)
+  write_to_file(self.logfile_path, 'a', '\n' .. table.concat(columns, '\t'))
 end
+
+-- function Logger:write()
+--   -- local logs_filepath = self.logs_dir .. '/losses.txt'
+--   local info_filepath = self.logs_dir .. '/info.txt'
+--   -- local file = io.open(logs_filepath, 'w')
+--   --     file:write(self.logs)
+--   --     file:close()
+--   local file = io.open(info_filepath, 'w')
+--       file:write(pretty.write(self.info))
+--       file:close()
+
+-- end
+
+-- function Logger:write_result(results)
+
+--   local filepath = self.logs_dir .. '/result.json'
+--   json.save(filepath, results)
+
+--   -- local file = io.open(filepath, 'w')
+--   -- file:write(json.encode(results))
+--   -- file:close()
+-- end
 
 return Logger

@@ -1,12 +1,14 @@
 
 local utils_test = torch.TestSuite()
+local datasets_test = torch.TestSuite()
 local tester = torch.Tester()
 
 utils = require './utils'
+datasets = require './datasets'
 
-function utils_test.load_data()
+function datasets_test.mnist_normalized()
 
-  train_data, train_label, validation_data, validation_label = utils.load_data()
+  train_data, train_label, validation_data, validation_label = datasets.mnist()
 
   tester:eq(train_data:size(), torch.LongStorage{50000, 28, 28});
   tester:eq(train_label:size(), torch.LongStorage{50000});
@@ -18,13 +20,29 @@ function utils_test.load_data()
   tester:eq(validation_data:mean(), 0, 0.01)
   tester:eq(validation_data:std(), 1, 0.01)
 
-
   max, _ = torch.max(train_label)
   min, _ = torch.min(train_label)
   tester:eq(max, 10)
   tester:eq(min, 1)
   
 end
+
+function datasets_test.mnist_unnormalized()
+
+  train_data, train_label, validation_data, validation_label = datasets.mnist(false)
+
+  tester:eq(train_data:size(), torch.LongStorage{50000, 28, 28});
+  tester:eq(train_label:size(), torch.LongStorage{50000});
+  tester:eq(validation_data:size(), torch.LongStorage{10000, 28, 28});
+  tester:eq(validation_label:size(), torch.LongStorage{10000});
+
+  max, _ = torch.max(train_data)
+  min, _ = torch.min(train_data)
+  tester:eq(max, 255)
+  tester:eq(min, 0)
+  
+end
+
 
 function utils_test.get_batch()
 
@@ -42,5 +60,6 @@ function utils_test.get_batch()
 
 end
 
+tester:add(datasets_test)
 tester:add(utils_test)
 tester:run()

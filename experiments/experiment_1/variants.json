@@ -1,0 +1,49 @@
+[{
+  "no": 1,
+  "train": {
+    "epochs": 100,
+    "batch_size": 100
+  },
+  "optim": {
+    "learningRate": 1e-1,
+    "learningRateDecay": 0,
+    "weightDecay": 0,
+    "momentum": 0
+  }
+},{
+  "no": 2,
+  "train": {
+    "epochs": 100,
+    "batch_size": 100
+  },
+  "optim": {
+    "learningRate": 1e-2,
+    "learningRateDecay": 0,
+    "weightDecay": 0,
+    "momentum": 0
+  }
+},{
+  "no": 3,
+  "train": {
+    "epochs": 100,
+    "batch_size": 100
+  },
+  "optim": {
+    "learningRate": 1e-3,
+    "learningRateDecay": 0,
+    "weightDecay": 0,
+    "momentum": 0
+  }
+},{
+  "no": 4,
+  "train": {
+    "epochs": 100,
+    "batch_size": 100
+  },
+  "optim": {
+    "learningRate": 1e-4,
+    "learningRateDecay": 0,
+    "weightDecay": 0,
+    "momentum": 0
+  }
+}]
